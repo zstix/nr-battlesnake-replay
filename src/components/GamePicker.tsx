@@ -1,7 +1,24 @@
 import * as React from "react";
-import { Stack, StackItem, AccountPicker, NrqlQuery } from "nr1";
+import {
+  InlineMessage,
+  Spinner,
+  Stack,
+  StackItem,
+  AccountPicker,
+  NrqlQuery,
+} from "nr1";
 
-const GAME_QUERY = "";
+import GameTable from "./GameTable";
+
+// TODO: pull this from the nerdlet state
+const TIME_SINCE = "1 day ago";
+
+const GAME_QUERY = `
+SELECT snakeGameId, snakeGameIsWin, snakeGameWinnerId
+FROM Transaction
+WHERE path = '/end'
+SINCE ${TIME_SINCE}
+`;
 
 const GamePicker = () => {
   const [account, setAccount] = React.useState<number>();
@@ -22,8 +39,23 @@ const GamePicker = () => {
         <StackItem>
           <NrqlQuery accountIds={[account]} query={GAME_QUERY}>
             {({ loading, error, data }) => {
-              console.log(loading, error, data);
-              return <div>Hey</div>;
+              if (loading) {
+                return <Spinner />;
+              }
+
+              if (error) {
+                console.log("Fetch error:", error);
+                return (
+                  <InlineMessage
+                    type={InlineMessage.TYPE.WARNING}
+                    label="Unable to fetch recent Battlesnake games"
+                  />
+                );
+              }
+
+              const games = data[0].data as GameQueryResponseData[];
+
+              return <GameTable games={games} />;
             }}
           </NrqlQuery>
         </StackItem>

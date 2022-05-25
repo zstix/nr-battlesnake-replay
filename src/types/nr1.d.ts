@@ -68,6 +68,50 @@ declare module "nr1" {
 
   export class StackItem extends React.Component<BaseProps> {}
 
+  interface TableProps {
+    items: any[];
+    children: (React.ReactNode | ((item: any) => React.ReactNode))[];
+  }
+
+  export class Table extends React.Component<TableProps> {}
+
+  export class TableHeader extends React.Component<BaseProps> {}
+
+  interface TableHeaderCellProps extends BaseProps {
+    value: (rawValue: any) => string | number | boolean;
+    width?: string;
+  }
+
+  export class TableHeaderCell extends React.Component<TableHeaderCellProps> {}
+
+  interface TableRowProps extends BaseProps {
+    onClick?: (event: React.MouseEvent) => void;
+  }
+
+  export class TableRow extends React.Component<TableRowProps> {}
+
+  export class TableRowCell extends React.Component<BaseProps> {}
+
+  // Feedback \\
+
+  export class Spinner extends React.Component<{}> {}
+
+  enum InlineMessageType {
+    CRITICAL,
+    INFO,
+    SUCCESS,
+    WARNING,
+  }
+
+  interface InlineMessageProps {
+    type: InlineMessageType;
+    label: string;
+  }
+
+  export class InlineMessage extends React.Component<InlineMessageProps> {
+    static TYPE = InlineMessageType;
+  }
+
   // Queries \\
 
   interface AccountPickerProps {
