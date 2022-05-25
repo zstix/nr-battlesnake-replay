@@ -78,7 +78,7 @@ declare module "nr1" {
   export class TableHeader extends React.Component<BaseProps> {}
 
   interface TableHeaderCellProps extends BaseProps {
-    value: (rawValue: any) => string | number | boolean;
+    value?: (rawValue: any) => string | number | boolean;
     width?: string;
   }
 
