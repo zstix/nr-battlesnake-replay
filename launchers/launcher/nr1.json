@@ -1,7 +1,7 @@
 {
   "schemaType": "LAUNCHER",
   "id": "launcher",
-  "displayName": "Launcher",
-  "description": "Describe me",
-  "rootNerdletId": "ed25e20a-b491-4574-ab68-9f081154e724.replay"
+  "displayName": "Battlesnake Replay",
+  "description": "Pick recent Battlesnake games to review",
+  "rootNerdletId": "9e40f8dd-99b7-4fe8-bb0f-fe05e8835edd.replay"
 }
