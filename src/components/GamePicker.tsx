@@ -12,7 +12,7 @@ import {
 import GameList from "./GameList";
 
 // TODO: pull this from the nerdlet state
-const TIME_SINCE = "1 day ago";
+const TIME_SINCE = "1 week ago";
 
 const GAME_QUERY = `
 SELECT snakeGameId, snakeGameIsWin, snakeGameWinnerId
@@ -55,7 +55,10 @@ const GamePicker = () => {
                 );
               }
 
-              const games = data[0].data as GameQueryResponseData[];
+              const games =
+                (data?.[0]?.data?.filter(
+                  (d: GameQueryResponseData) => d.snakeGameId
+                ) as GameQueryResponseData[]) || [];
 
               return (
                 <>

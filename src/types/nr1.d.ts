@@ -58,7 +58,7 @@ declare module "nr1" {
   interface StackProps extends BaseProps {
     directionType?: StackDirectionType;
     gapType?: StackGapType;
-    spacingType?: [StackSpacingType];
+    spacingType?: StackSpacingType[];
     fullWidth?: boolean;
   }
 
@@ -110,7 +110,7 @@ declare module "nr1" {
 
   interface TileProps extends BaseProps {
     sizeType?: TileSizeType;
-    spacingType?: TileSpacingType;
+    spacingType?: TileSpacingType[];
     value?: string | number;
   }
 
@@ -142,7 +142,7 @@ declare module "nr1" {
   interface TileGroupProps extends BaseProps {
     selectionType?: TileGroupSelectionType;
     gapType?: TileGroupGapType;
-    spacingType?: TileGroupSpacingType;
+    spacingType?: TileGroupSpacingType[];
     onChange?: (
       event: React.MouseEvent,
       tileValue: any,
@@ -179,10 +179,10 @@ declare module "nr1" {
 
   interface HeadingTextProps extends BaseProps {
     type?: HeadingTextType;
-    spacingType?: [HeadingTextSpacingType];
+    spacingType?: HeadingTextSpacingType[];
   }
 
-  export class HeadingText extends React.Component<HeadingTextType> {
+  export class HeadingText extends React.Component<HeadingTextProps> {
     static TYPE = HeadingTextType;
     static SPACING_TYPE = HeadingTextSpacingType;
   }
@@ -208,10 +208,7 @@ declare module "nr1" {
   }
 
   enum GridGapType {
-    EXTRA_LARGE,
-    LARGE,
     MEDIUM,
-    NONE,
     SMALL,
   }
 
@@ -220,7 +217,7 @@ declare module "nr1" {
   }
 
   export class Grid extends React.Component<GridProps> {
-    static TYPE = GridGapType;
+    static GAP_TYPE = GridGapType;
   }
 
   interface GridItemProps extends BaseProps {
