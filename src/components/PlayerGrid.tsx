@@ -2,6 +2,7 @@ import * as React from "react";
 import { Grid, GridItem, HeadingText } from "nr1";
 
 import { ReplayContext } from "./ReplayContext";
+import Player from "./Player";
 
 const PlayerGrid = () => {
   const { gameIds } = React.useContext(ReplayContext);
@@ -18,13 +19,9 @@ const PlayerGrid = () => {
         {gameIds.length ? "View" : "Pick"} Game(s)
       </HeadingText>
       <Grid>
-        {gameIds.map((id) => (
-          <GridItem
-            key={id}
-            columnSpan={4}
-            style={{ backgroundColor: "silver" }}
-          >
-            {id}
+        {gameIds.map((gameId) => (
+          <GridItem key={gameId} columnSpan={4}>
+            <Player gameId={gameId} />
           </GridItem>
         ))}
       </Grid>

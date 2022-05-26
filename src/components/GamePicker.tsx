@@ -9,6 +9,7 @@ import {
   HeadingText,
 } from "nr1";
 
+import { ReplayContext } from "./ReplayContext";
 import GameList from "./GameList";
 
 // TODO: pull this from the nerdlet state
@@ -22,7 +23,7 @@ SINCE ${TIME_SINCE}
 `;
 
 const GamePicker = () => {
-  const [account, setAccount] = React.useState<number>();
+  const { account, setAccount } = React.useContext(ReplayContext);
 
   return (
     <Stack
@@ -37,7 +38,7 @@ const GamePicker = () => {
         />
       </StackItem>
 
-      {account && (
+      {Boolean(account) && (
         <StackItem style={{ width: "90%" }}>
           <NrqlQuery accountIds={[account]} query={GAME_QUERY}>
             {({ loading, error, data }) => {
