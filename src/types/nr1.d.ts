@@ -6,6 +6,7 @@ declare module "nr1" {
   interface BaseProps {
     children: React.ReactNode;
     className?: string;
+    style?: any;
   }
 
   // Structure \\
@@ -58,6 +59,7 @@ declare module "nr1" {
     directionType?: StackDirectionType;
     gapType?: StackGapType;
     spacingType?: [StackSpacingType];
+    fullWidth?: boolean;
   }
 
   export class Stack extends React.Component<StackProps> {
@@ -92,6 +94,99 @@ declare module "nr1" {
 
   export class TableRowCell extends React.Component<BaseProps> {}
 
+  enum TileSizeType {
+    MEDIUM,
+    SMALL,
+  }
+
+  enum TileSpacingType {
+    EXTRA_LARGE,
+    LARGE,
+    MEDIUM,
+    NONE,
+    OMIT,
+    SMALL,
+  }
+
+  interface TileProps extends BaseProps {
+    sizeType?: TileSizeType;
+    spacingType?: TileSpacingType;
+    value?: string | number;
+  }
+
+  export class Tile extends React.Component<TileProps> {
+    static SIZE_TYPE = TileSizeType;
+    static SPACING_TYPE = TileSpacingType;
+  }
+
+  enum TileGroupSelectionType {
+    MULTIPLE,
+    NONE,
+    SINGLE,
+  }
+
+  enum TileGroupGapType {
+    MEDIUM,
+    SMALL,
+  }
+
+  enum TileGroupSpacingType {
+    EXTRA_LARGE,
+    LARGE,
+    MEDIUM,
+    NONE,
+    OMIT,
+    SMALL,
+  }
+
+  interface TileGroupProps extends BaseProps {
+    selectionType?: TileGroupSelectionType;
+    gapType?: TileGroupGapType;
+    spacingType?: TileGroupSpacingType;
+    onChange?: (
+      event: React.MouseEvent,
+      tileValue: any,
+      checked: boolean
+    ) => void;
+    tileWidth?: string | number;
+  }
+
+  export class TileGroup extends React.Component<TileGroupProps> {
+    static SELECTION_TYPE = TileGroupSelectionType;
+    static GAP_TYPE = TileGroupGapType;
+    static SPACING_TYPE = TileGroupSpacingType;
+  }
+
+  // Text \\
+
+  enum HeadingTextType {
+    HEADING_1,
+    HEADING_2,
+    HEADING_3,
+    HEADING_4,
+    HEADING_5,
+    HEADING_6,
+  }
+
+  enum HeadingTextSpacingType {
+    EXTRA_LARGE,
+    LARGE,
+    MEDIUM,
+    NONE,
+    OMIT,
+    SMALL,
+  }
+
+  interface HeadingTextProps extends BaseProps {
+    type?: HeadingTextType;
+    spacingType?: [HeadingTextSpacingType];
+  }
+
+  export class HeadingText extends React.Component<HeadingTextType> {
+    static TYPE = HeadingTextType;
+    static SPACING_TYPE = HeadingTextSpacingType;
+  }
+
   // Feedback \\
 
   export class Spinner extends React.Component<{}> {}
@@ -110,6 +205,47 @@ declare module "nr1" {
 
   export class InlineMessage extends React.Component<InlineMessageProps> {
     static TYPE = InlineMessageType;
+  }
+
+  enum GridGapType {
+    EXTRA_LARGE,
+    LARGE,
+    MEDIUM,
+    NONE,
+    SMALL,
+  }
+
+  interface GridProps extends BaseProps {
+    gapType?: GridGapType;
+  }
+
+  export class Grid extends React.Component<GridProps> {
+    static TYPE = GridGapType;
+  }
+
+  interface GridItemProps extends BaseProps {
+    columnSpan?: number;
+    columnStart?: number;
+    columnEnd?: number;
+    collapseGapAfter?: boolean;
+    collapseGapBefore?: boolean;
+  }
+
+  export class GridItem extends React.Component<GridItemProps> {}
+
+  enum IconType {
+    INTERFACE__SIGN__CHECKMARK__V_ALTERNATE,
+    INTERFACE__OPERATIONS__CLOSE__V_ALTERNATE,
+    INTERFACE__SIGN__MINUS__V_ALTERNATE,
+  }
+
+  interface IconProps {
+    type: IconType;
+    color?: string;
+  }
+
+  export class Icon extends React.Component<IconProps> {
+    static TYPE = IconType;
   }
 
   // Queries \\

@@ -6,9 +6,10 @@ import {
   StackItem,
   AccountPicker,
   NrqlQuery,
+  HeadingText,
 } from "nr1";
 
-import GameTable from "./GameTable";
+import GameList from "./GameList";
 
 // TODO: pull this from the nerdlet state
 const TIME_SINCE = "1 day ago";
@@ -27,6 +28,7 @@ const GamePicker = () => {
     <Stack
       directionType={Stack.DIRECTION_TYPE.VERTICAL}
       spacingType={[Stack.SPACING_TYPE.LARGE]}
+      fullWidth
     >
       <StackItem>
         <AccountPicker
@@ -36,7 +38,7 @@ const GamePicker = () => {
       </StackItem>
 
       {account && (
-        <StackItem>
+        <StackItem style={{ width: "90%" }}>
           <NrqlQuery accountIds={[account]} query={GAME_QUERY}>
             {({ loading, error, data }) => {
               if (loading) {
@@ -55,7 +57,22 @@ const GamePicker = () => {
 
               const games = data[0].data as GameQueryResponseData[];
 
-              return <GameTable games={games} />;
+              return (
+                <>
+                  <HeadingText
+                    type={HeadingText.TYPE.HEADING_3}
+                    spacingType={[
+                      HeadingText.SPACING_TYPE.NONE,
+                      HeadingText.SPACING_TYPE.NONE,
+                      HeadingText.SPACING_TYPE.MEDIUM,
+                      HeadingText.SPACING_TYPE.NONE,
+                    ]}
+                  >
+                    Select Game(s)
+                  </HeadingText>
+                  <GameList games={games} />
+                </>
+              );
             }}
           </NrqlQuery>
         </StackItem>
