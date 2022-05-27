@@ -1,0 +1,12 @@
+.bsr-player .bsr-board {
+  margin-top: 1em;
+  display: grid;
+  gap: 3px;
+
+  &--cell {
+    background-color: #f1f1f1;
+    text-align: center;
+    border-radius: 2px;
+    aspect-ratio: 1;
+  }
+}

@@ -19,6 +19,11 @@ const PlayerGrid = () => {
         {gameIds.length ? "View" : "Pick"} Game(s)
       </HeadingText>
       <Grid>
+        <GridItem columnSpan={12}>
+          <Player gameId={"foobar"} />
+        </GridItem>
+      </Grid>
+      <Grid>
         {gameIds.map((gameId) => (
           <GridItem key={gameId} columnSpan={4}>
             <Player gameId={gameId} />
