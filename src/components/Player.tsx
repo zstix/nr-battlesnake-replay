@@ -29,25 +29,51 @@ interface Position {
   y: number;
 }
 
-interface TurnData {
+interface TurnState {
   turn: number;
-  board: {
-    width: number;
-    height: number;
-    food: Position[];
-    hazards: Position[];
-  };
+  cells: {
+    x: number;
+    y: number;
+    isFood?: boolean;
+    isHazard?: boolean;
+    isSnake?: boolean;
+    color?: string;
+  }[][];
 }
 
-const parseRawTurnData = (data: RawTurnData): TurnData => ({
-  turn: data.snakeTurn,
-  board: {
-    width: data.snakeBoardWidth,
-    height: data.snakeBoardHeight,
-    food: JSON.parse(atob(data.snakeBoardFood)) as Position[],
-    hazards: JSON.parse(atob(data.snakeBoardHazards)) as Position[],
-  },
-});
+const parseRawTurnData = (raw: RawTurnData): TurnState => {
+  const board = {
+    width: raw.snakeBoardWidth,
+    height: raw.snakeBoardHeight,
+    food: JSON.parse(atob(raw.snakeBoardFood)) as Position[],
+    hazards: JSON.parse(atob(raw.snakeBoardHazards)) as Position[],
+  };
+
+  const cells = Array.from({ length: board.height }).map((_, row) =>
+    Array.from({ length: board.width }).map((_, x) => {
+      const pos = { x, y: board.height - row - 1 };
+
+      const isFood = Boolean(
+        board.food.find(({ x, y }) => x == pos.x && y == pos.y)
+      );
+
+      const isHazard = Boolean(
+        board.hazards.find(({ x, y }) => x == pos.x && y == pos.y)
+      );
+
+      // TODO: you
+      // TODO: snakes
+
+      return { ...pos, isFood, isHazard };
+    })
+  );
+
+  console.log(board);
+
+  return { turn: raw.snakeTurn, cells };
+
+  // return turnData;
+};
 
 const testTurnData: RawTurnData = {
   appId: 1076323376,
@@ -118,8 +144,7 @@ interface PlayerProps {
 }
 
 const Player = ({ gameId }: PlayerProps) => {
-  const turn = parseRawTurnData(testTurnData);
-  const { width, height } = turn.board;
+  const { cells } = parseRawTurnData(testTurnData);
 
   // TODO: render snakes and food and hazards
   return (
@@ -127,12 +152,14 @@ const Player = ({ gameId }: PlayerProps) => {
       <HeadingText type={HeadingText.TYPE.HEADING_4}>{gameId}</HeadingText>
       <div
         className="bsr-board"
-        style={{ gridTemplateColumns: `repeat(${width}, 1fr)` }}
+        style={{ gridTemplateColumns: `repeat(${cells[0].length}, 1fr)` }}
       >
-        {Array.from({ length: height }).map((_, row) =>
-          Array.from({ length: width }).map((_, col) => (
-            <div className="bsr-board--cell">
-              {col},{height - row - 1}
+        {cells.map((row) =>
+          row.map((cell) => (
+            <div className="bsr-board--cell" key={`${cell.x},${cell.y}`}>
+              {cell.x},{cell.y}
+              {cell.isFood && <div className="bsr-board--food" />}
+              {cell.isHazard && <div className="bsr-board--hazard" />}
             </div>
           ))
         )}
