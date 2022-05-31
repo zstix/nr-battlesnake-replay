@@ -22,6 +22,13 @@ interface RawTurnData extends Record<string, string | number | boolean> {
   snakeBoardHazards: string;
   snakeBoardWidth: number;
   snakeBoardHeight: number;
+  snakeData: string;
+}
+
+interface RawSnakeData {
+  head: Position;
+  body: Position[];
+  color: string;
 }
 
 interface Position {
@@ -36,39 +43,43 @@ interface TurnState {
     y: number;
     isFood?: boolean;
     isHazard?: boolean;
-    isSnake?: boolean;
+    isHead?: boolean;
     color?: string;
   }[][];
 }
+
+const decode = <T extends unknown>(data: string): T => JSON.parse(atob(data));
+
+const isPosEqual = (a: Position) => (b: Position) => a.x == b.x && a.y == b.y;
+
+const isPosInArray = (pos: Position, arr: Position[]) =>
+  arr.some(isPosEqual(pos));
 
 const parseRawTurnData = (raw: RawTurnData): TurnState => {
   const board = {
     width: raw.snakeBoardWidth,
     height: raw.snakeBoardHeight,
-    food: JSON.parse(atob(raw.snakeBoardFood)) as Position[],
-    hazards: JSON.parse(atob(raw.snakeBoardHazards)) as Position[],
+    food: decode<Position[]>(raw.snakeBoardFood),
+    hazards: decode<Position[]>(raw.snakeBoardHazards),
   };
+
+  const you = decode<RawSnakeData>(raw.snakeData);
 
   const cells = Array.from({ length: board.height }).map((_, row) =>
     Array.from({ length: board.width }).map((_, x) => {
       const pos = { x, y: board.height - row - 1 };
 
-      const isFood = Boolean(
-        board.food.find(({ x, y }) => x == pos.x && y == pos.y)
-      );
+      const isFood = Boolean(board.food.find(isPosEqual(pos)));
+      const isHazard = Boolean(board.hazards.find(isPosEqual(pos)));
 
-      const isHazard = Boolean(
-        board.hazards.find(({ x, y }) => x == pos.x && y == pos.y)
-      );
+      const color = isPosInArray(pos, you.body) ? you.color : undefined;
+      const isHead = isPosEqual(pos)(you.head);
 
-      // TODO: you
       // TODO: snakes
 
-      return { ...pos, isFood, isHazard };
+      return { ...pos, isFood, isHazard, isHead, color };
     })
   );
-
-  console.log(board);
 
   return { turn: raw.snakeTurn, cells };
 
@@ -160,6 +171,12 @@ const Player = ({ gameId }: PlayerProps) => {
               {cell.x},{cell.y}
               {cell.isFood && <div className="bsr-board--food" />}
               {cell.isHazard && <div className="bsr-board--hazard" />}
+              {cell.color && (
+                <div
+                  className={`bsr-board--snake ${cell.isHead ? "head" : ""}`}
+                  style={{ backgroundColor: cell.color }}
+                />
+              )}
             </div>
           ))
         )}

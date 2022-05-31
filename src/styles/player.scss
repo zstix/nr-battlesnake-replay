@@ -25,7 +25,8 @@
     z-index: 5;
   }
 
-  &--hazard {
+  &--hazard,
+  &--snake {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -33,6 +34,19 @@
     border-radius: 2px;
     top: 0;
     left: 0;
+  }
+
+  &--hazard {
+    background-color: gray;
     z-index: 2;
+  }
+
+  &--snake {
+    z-index: 3;
+    opacity: 0.5;
+
+    &.head {
+      opacity: 1;
+    }
   }
 }
