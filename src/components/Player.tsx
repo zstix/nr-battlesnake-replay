@@ -16,24 +16,35 @@ import { HeadingText } from "nr1";
 // LIMIT MAX
 // `;
 
-interface RawTurnData extends Record<string, string | number | boolean> {
+interface RawTurnData extends Record<string, any> {
   snakeTurn: number;
   snakeBoardFood: string;
   snakeBoardHazards: string;
   snakeBoardWidth: number;
   snakeBoardHeight: number;
   snakeData: string;
+
+  // TODO: find a better way of doing this
+  snakeOpponent_1_Name?: string;
+  snakeOpponent_1_Data?: string;
+  snakeOpponent_2_Name?: string;
+  snakeOpponent_2_Data?: string;
+  snakeOpponent_3_Name?: string;
+  snakeOpponent_3_Data?: string;
+  snakeOpponent_4_Name?: string;
+  snakeOpponent_4_Data?: string;
+}
+
+interface Position {
+  x: number;
+  y: number;
 }
 
 interface RawSnakeData {
   head: Position;
   body: Position[];
   color: string;
-}
-
-interface Position {
-  x: number;
-  y: number;
+  name?: string;
 }
 
 interface TurnState {
@@ -63,7 +74,17 @@ const parseRawTurnData = (raw: RawTurnData): TurnState => {
     hazards: decode<Position[]>(raw.snakeBoardHazards),
   };
 
-  const you = decode<RawSnakeData>(raw.snakeData);
+  let snakes: RawSnakeData[] = [decode<RawSnakeData>(raw.snakeData)];
+
+  // TODO: find a better way of doing this
+  if (raw.snakeOpponent_1_Data)
+    snakes.push(decode<RawSnakeData>(raw.snakeOpponent_1_Data));
+  if (raw.snakeOpponent_2_Data)
+    snakes.push(decode<RawSnakeData>(raw.snakeOpponent_2_Data));
+  if (raw.snakeOpponent_3_Data)
+    snakes.push(decode<RawSnakeData>(raw.snakeOpponent_3_Data));
+  if (raw.snakeOpponent_4_Data)
+    snakes.push(decode<RawSnakeData>(raw.snakeOpponent_4_Data));
 
   const cells = Array.from({ length: board.height }).map((_, row) =>
     Array.from({ length: board.width }).map((_, x) => {
@@ -72,10 +93,9 @@ const parseRawTurnData = (raw: RawTurnData): TurnState => {
       const isFood = Boolean(board.food.find(isPosEqual(pos)));
       const isHazard = Boolean(board.hazards.find(isPosEqual(pos)));
 
-      const color = isPosInArray(pos, you.body) ? you.color : undefined;
-      const isHead = isPosEqual(pos)(you.head);
-
-      // TODO: snakes
+      const snake = snakes.find(({ body }) => isPosInArray(pos, body));
+      const color = snake ? snake.color : undefined;
+      const isHead = snake && isPosEqual(pos)(snake.head);
 
       return { ...pos, isFood, isHazard, isHead, color };
     })
@@ -157,7 +177,6 @@ interface PlayerProps {
 const Player = ({ gameId }: PlayerProps) => {
   const { cells } = parseRawTurnData(testTurnData);
 
-  // TODO: render snakes and food and hazards
   return (
     <div className="bsr-player">
       <HeadingText type={HeadingText.TYPE.HEADING_4}>{gameId}</HeadingText>
