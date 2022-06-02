@@ -1,13 +1,13 @@
 import * as React from "react";
 
 type ReplayContextType = {
-  gameIds: string[];
-  setGameIds: (gameIds: string[]) => void;
+  games: ReplayGames;
+  setGames: (games: ReplayGames) => void;
 };
 
 export const ReplayContext = React.createContext<ReplayContextType>({
-  gameIds: [],
-  setGameIds: () => {},
+  games: {},
+  setGames: () => {},
 });
 
 export const ReplayContextProvider = ({
@@ -15,10 +15,10 @@ export const ReplayContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [gameIds, setGameIds] = React.useState<string[]>([]);
+  const [games, setGames] = React.useState<ReplayGames>({});
 
   return (
-    <ReplayContext.Provider value={{ gameIds, setGameIds }}>
+    <ReplayContext.Provider value={{ games, setGames }}>
       {children}
     </ReplayContext.Provider>
   );

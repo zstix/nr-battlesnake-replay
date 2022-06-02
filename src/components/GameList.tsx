@@ -30,11 +30,30 @@ const getWinState = (game: GameQueryResponseData) => {
   );
 };
 
-const addGame = (id: string, arr: string[]) => [...arr, id];
-const removeGame = (id: string, arr: string[]) => arr.filter((x) => x !== id);
+const addGame = (id: string, games: ReplayGames) => {
+  if (!games[id]) {
+    return { ...games, [id]: { showing: true } };
+  }
 
-const GameList = ({ games }: GameListProps) => {
-  const { gameIds, setGameIds } = React.useContext(ReplayContext);
+  return {
+    ...games,
+    [id]: {
+      ...games[id],
+      showing: true,
+    },
+  };
+};
+
+const removeGame = (id: string, games: ReplayGames) => ({
+  ...games,
+  [id]: {
+    ...games[id],
+    showing: false,
+  },
+});
+
+const GameList = (props: GameListProps) => {
+  const { games, setGames } = React.useContext(ReplayContext);
 
   return (
     <TileGroup
@@ -42,13 +61,13 @@ const GameList = ({ games }: GameListProps) => {
       gapType={TileGroup.GAP_TYPE.SMALL}
       onChange={(_e, id, checked) => {
         if (checked) {
-          setGameIds(addGame(id, gameIds));
+          setGames(addGame(id, games));
         } else {
-          setGameIds(removeGame(id, gameIds));
+          setGames(removeGame(id, games));
         }
       }}
     >
-      {games.map((game, i) => (
+      {props.games.map((game, i) => (
         <Tile key={i} value={game.snakeGameId} sizeType={Tile.SIZE_TYPE.SMALL}>
           {getWinState(game)} {game.snakeGameId}
         </Tile>

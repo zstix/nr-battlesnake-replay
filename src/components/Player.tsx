@@ -10,6 +10,7 @@ import {
 
 import timeRangeToNrql from "../utils/timeRangeToNrql";
 import { AccountContext } from "./AccountContext";
+import { ReplayContext } from "./ReplayContext";
 import Board from "./Board";
 
 const getGameQuery = (gameId: string, platformState: PlatformState) => `
@@ -108,6 +109,17 @@ interface PlayerProps {
 // TODO: cache the game data?
 const Player = ({ gameId }: PlayerProps) => {
   const { account } = React.useContext(AccountContext);
+  const { games, setGames } = React.useContext(ReplayContext);
+
+  // if we already have the game fetched, just render it
+  if (games?.[gameId].turns?.length) {
+    return (
+      <div className="bsr-player">
+        <HeadingText type={HeadingText.TYPE.HEADING_4}>{gameId}</HeadingText>
+        <Board state={games[gameId].turns![0]} />
+      </div>
+    );
+  }
 
   return (
     <PlatformStateContext.Consumer>
@@ -131,16 +143,26 @@ const Player = ({ gameId }: PlayerProps) => {
               );
             }
 
-            // TODO: put this into board state
-            console.log("data", data);
-            const state = parseRawTurnData(data[0].data[0]);
+            // TODO: remove
+            console.log("post-fetch data", data);
+
+            // TODO: get all turns, not just the first
+            const turn = parseRawTurnData(data[0].data[0]);
+
+            setGames({
+              ...games,
+              [gameId]: {
+                ...games[gameId],
+                turns: [turn],
+              },
+            });
 
             return (
               <div className="bsr-player">
                 <HeadingText type={HeadingText.TYPE.HEADING_4}>
                   {gameId}
                 </HeadingText>
-                <Board state={state} />
+                <Board state={turn} />
               </div>
             );
           }}

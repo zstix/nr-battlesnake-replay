@@ -18,3 +18,10 @@ interface TurnState {
   turn: number;
   cells: TurnStateCell[][];
 }
+
+interface ReplayGame {
+  showing: boolean;
+  turns?: TurnState[];
+}
+
+type ReplayGames = Record<string, ReplayGame>;
