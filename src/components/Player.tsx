@@ -9,7 +9,7 @@ import {
 } from "nr1";
 
 import timeRangeToNrql from "../utils/timeRangeToNrql";
-import { ReplayContext } from "./ReplayContext";
+import { AccountContext } from "./AccountContext";
 import Board from "./Board";
 
 const getGameQuery = (gameId: string, platformState: PlatformState) => `
@@ -107,7 +107,7 @@ interface PlayerProps {
 
 // TODO: cache the game data?
 const Player = ({ gameId }: PlayerProps) => {
-  const { account } = React.useContext(ReplayContext);
+  const { account } = React.useContext(AccountContext);
 
   return (
     <PlatformStateContext.Consumer>

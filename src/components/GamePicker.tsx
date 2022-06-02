@@ -12,7 +12,7 @@ import {
 } from "nr1";
 
 import timeRangeToNrql from "../utils/timeRangeToNrql";
-import { ReplayContext } from "./ReplayContext";
+import { AccountContext } from "./AccountContext";
 import GameList from "./GameList";
 
 const getGameQuery = (platformState: PlatformState) => `
@@ -23,7 +23,7 @@ const getGameQuery = (platformState: PlatformState) => `
 `;
 
 const GamePicker = () => {
-  const { account, setAccount } = React.useContext(ReplayContext);
+  const { account, setAccount } = React.useContext(AccountContext);
 
   return (
     <Stack
