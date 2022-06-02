@@ -2,6 +2,18 @@ import * as React from "react";
 
 type FIXME = any;
 
+interface PlatformStateTimeRange {
+  beginTime?: number;
+  endTime?: number;
+  begin_time?: number;
+  end_time?: number;
+  duration: number;
+}
+
+interface PlatformState {
+  timeRange: PlatformStateTimeRange;
+}
+
 declare module "nr1" {
   interface BaseProps {
     children: React.ReactNode;
@@ -269,4 +281,14 @@ declare module "nr1" {
   }
 
   export class NrqlQuery extends React.Component<NrqlQueryProps> {}
+
+  interface PlatformStateContextConsumerProps {
+    children: (state: PlatformState) => React.ReactNode;
+  }
+
+  class PlatformStateConsumer extends React.Component<PlatformStateContextConsumerProps> {}
+
+  export class PlatformStateContext {
+    static Consumer = PlatformStateConsumer;
+  }
 }

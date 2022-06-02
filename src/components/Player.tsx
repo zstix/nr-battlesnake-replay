@@ -1,19 +1,24 @@
 import * as React from "react";
-import { HeadingText, NrqlQuery, Spinner, InlineMessage } from "nr1";
+import {
+  HeadingText,
+  NrqlQuery,
+  Spinner,
+  InlineMessage,
+  PlatformState,
+  PlatformStateContext,
+} from "nr1";
 
+import timeRangeToNrql from "../utils/timeRangeToNrql";
 import { ReplayContext } from "./ReplayContext";
 import Board from "./Board";
 
-// TODO: pull this from the nerdlet state
-const TIME_SINCE = "2 weeks ago";
-
-const getGameQuery = (gameId: string) => `
-SELECT *
-FROM Transaction
-WHERE snakeGameId = '${gameId}'
-ORDER BY snakeTurn
-SINCE ${TIME_SINCE}
-LIMIT MAX
+const getGameQuery = (gameId: string, platformState: PlatformState) => `
+  SELECT *
+  FROM Transaction
+  WHERE snakeGameId = '${gameId}'
+  ORDER BY snakeTurn
+  LIMIT MAX
+  ${timeRangeToNrql(platformState)}
 `;
 
 interface RawTurnData extends Record<string, any> {
@@ -105,36 +110,43 @@ const Player = ({ gameId }: PlayerProps) => {
   const { account } = React.useContext(ReplayContext);
 
   return (
-    <NrqlQuery accountIds={[account]} query={getGameQuery(gameId)}>
-      {({ loading, error, data }) => {
-        if (loading) {
-          return <Spinner />;
-        }
+    <PlatformStateContext.Consumer>
+      {(platformState) => (
+        <NrqlQuery
+          accountIds={[account]}
+          query={getGameQuery(gameId, platformState)}
+        >
+          {({ loading, error, data }) => {
+            if (loading) {
+              return <Spinner />;
+            }
 
-        if (error) {
-          console.log("Fetch error:", error);
-          return (
-            <InlineMessage
-              type={InlineMessage.TYPE.WARNING}
-              label="Unable to fetch Battlesnake game"
-            />
-          );
-        }
+            if (error) {
+              console.log("Fetch error:", error);
+              return (
+                <InlineMessage
+                  type={InlineMessage.TYPE.WARNING}
+                  label="Unable to fetch Battlesnake game"
+                />
+              );
+            }
 
-        // TODO: put this into board state
-        console.log("data", data);
-        const state = parseRawTurnData(data[0].data[0]);
+            // TODO: put this into board state
+            console.log("data", data);
+            const state = parseRawTurnData(data[0].data[0]);
 
-        return (
-          <div className="bsr-player">
-            <HeadingText type={HeadingText.TYPE.HEADING_4}>
-              {gameId}
-            </HeadingText>
-            <Board state={state} />
-          </div>
-        );
-      }}
-    </NrqlQuery>
+            return (
+              <div className="bsr-player">
+                <HeadingText type={HeadingText.TYPE.HEADING_4}>
+                  {gameId}
+                </HeadingText>
+                <Board state={state} />
+              </div>
+            );
+          }}
+        </NrqlQuery>
+      )}
+    </PlatformStateContext.Consumer>
   );
 };
 

@@ -7,19 +7,19 @@ import {
   AccountPicker,
   NrqlQuery,
   HeadingText,
+  PlatformState,
+  PlatformStateContext,
 } from "nr1";
 
+import timeRangeToNrql from "../utils/timeRangeToNrql";
 import { ReplayContext } from "./ReplayContext";
 import GameList from "./GameList";
 
-// TODO: pull this from the nerdlet state
-const TIME_SINCE = "2 weeks ago";
-
-const GAME_QUERY = `
-SELECT snakeGameId, snakeGameIsWin, snakeGameWinnerId
-FROM Transaction
-WHERE path = '/end'
-SINCE ${TIME_SINCE}
+const getGameQuery = (platformState: PlatformState) => `
+  SELECT snakeGameId, snakeGameIsWin, snakeGameWinnerId
+  FROM Transaction
+  WHERE path = '/end'
+  ${timeRangeToNrql(platformState)}
 `;
 
 const GamePicker = () => {
@@ -40,45 +40,52 @@ const GamePicker = () => {
 
       {Boolean(account) && (
         <StackItem style={{ width: "90%" }}>
-          <NrqlQuery accountIds={[account]} query={GAME_QUERY}>
-            {({ loading, error, data }) => {
-              if (loading) {
-                return <Spinner />;
-              }
+          <PlatformStateContext.Consumer>
+            {(platformState) => (
+              <NrqlQuery
+                accountIds={[account]}
+                query={getGameQuery(platformState)}
+              >
+                {({ loading, error, data }) => {
+                  if (loading) {
+                    return <Spinner />;
+                  }
 
-              if (error) {
-                console.log("Fetch error:", error);
-                return (
-                  <InlineMessage
-                    type={InlineMessage.TYPE.WARNING}
-                    label="Unable to fetch recent Battlesnake games"
-                  />
-                );
-              }
+                  if (error) {
+                    console.log("Fetch error:", error);
+                    return (
+                      <InlineMessage
+                        type={InlineMessage.TYPE.WARNING}
+                        label="Unable to fetch recent Battlesnake games"
+                      />
+                    );
+                  }
 
-              const games =
-                (data?.[0]?.data?.filter(
-                  (d: GameQueryResponseData) => d.snakeGameId
-                ) as GameQueryResponseData[]) || [];
+                  const games =
+                    (data?.[0]?.data?.filter(
+                      (d: GameQueryResponseData) => d.snakeGameId
+                    ) as GameQueryResponseData[]) || [];
 
-              return (
-                <>
-                  <HeadingText
-                    type={HeadingText.TYPE.HEADING_3}
-                    spacingType={[
-                      HeadingText.SPACING_TYPE.NONE,
-                      HeadingText.SPACING_TYPE.NONE,
-                      HeadingText.SPACING_TYPE.MEDIUM,
-                      HeadingText.SPACING_TYPE.NONE,
-                    ]}
-                  >
-                    Select Game(s)
-                  </HeadingText>
-                  <GameList games={games} />
-                </>
-              );
-            }}
-          </NrqlQuery>
+                  return (
+                    <>
+                      <HeadingText
+                        type={HeadingText.TYPE.HEADING_3}
+                        spacingType={[
+                          HeadingText.SPACING_TYPE.NONE,
+                          HeadingText.SPACING_TYPE.NONE,
+                          HeadingText.SPACING_TYPE.MEDIUM,
+                          HeadingText.SPACING_TYPE.NONE,
+                        ]}
+                      >
+                        Select Game(s)
+                      </HeadingText>
+                      <GameList games={games} />
+                    </>
+                  );
+                }}
+              </NrqlQuery>
+            )}
+          </PlatformStateContext.Consumer>
         </StackItem>
       )}
     </Stack>
