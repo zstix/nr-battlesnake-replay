@@ -2,6 +2,9 @@
   margin-top: 1em;
   display: grid;
   gap: 3px;
+  border: 2px solid darkgray;
+  border-radius: 2px;
+  padding: 2px;
 
   &--cell {
     background-color: #f1f1f1;
