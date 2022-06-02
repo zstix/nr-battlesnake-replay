@@ -4,3 +4,17 @@ interface GameQueryResponseData {
   snakeGameIsWin: boolean;
   snakeGameWinnerId: string | null;
 }
+
+interface TurnStateCell {
+  x: number;
+  y: number;
+  isFood?: boolean;
+  isHazard?: boolean;
+  isHead?: boolean;
+  color?: string;
+}
+
+interface TurnState {
+  turn: number;
+  cells: TurnStateCell[][];
+}

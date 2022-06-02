@@ -13,7 +13,7 @@ import { ReplayContext } from "./ReplayContext";
 import GameList from "./GameList";
 
 // TODO: pull this from the nerdlet state
-const TIME_SINCE = "1 week ago";
+const TIME_SINCE = "2 weeks ago";
 
 const GAME_QUERY = `
 SELECT snakeGameId, snakeGameIsWin, snakeGameWinnerId

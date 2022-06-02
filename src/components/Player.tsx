@@ -1,20 +1,20 @@
 import * as React from "react";
-import { HeadingText } from "nr1";
-// import { NrqlQuery, Spinner, InlineMessage } from "nr1";
+import { HeadingText, NrqlQuery, Spinner, InlineMessage } from "nr1";
 
-// import { ReplayContext } from "./ReplayContext";
+import { ReplayContext } from "./ReplayContext";
+import Board from "./Board";
 
 // TODO: pull this from the nerdlet state
-// const TIME_SINCE = "1 week ago";
+const TIME_SINCE = "2 weeks ago";
 
-// const getGameQuery = (gameId: string) => `
-// SELECT *
-// FROM Transaction
-// WHERE snakeGameId = '${gameId}'
-// ORDER BY snakeTurn
-// SINCE ${TIME_SINCE}
-// LIMIT MAX
-// `;
+const getGameQuery = (gameId: string) => `
+SELECT *
+FROM Transaction
+WHERE snakeGameId = '${gameId}'
+ORDER BY snakeTurn
+SINCE ${TIME_SINCE}
+LIMIT MAX
+`;
 
 interface RawTurnData extends Record<string, any> {
   snakeTurn: number;
@@ -47,25 +47,17 @@ interface RawSnakeData {
   name?: string;
 }
 
-interface TurnState {
-  turn: number;
-  cells: {
-    x: number;
-    y: number;
-    isFood?: boolean;
-    isHazard?: boolean;
-    isHead?: boolean;
-    color?: string;
-  }[][];
-}
-
+// TODO: move this into utils file?
 const decode = <T extends unknown>(data: string): T => JSON.parse(atob(data));
 
+// TODO: move this into utils file?
 const isPosEqual = (a: Position) => (b: Position) => a.x == b.x && a.y == b.y;
 
+// TODO: move this into utils file?
 const isPosInArray = (pos: Position, arr: Position[]) =>
   arr.some(isPosEqual(pos));
 
+// TODO: move this into utils file?
 const parseRawTurnData = (raw: RawTurnData): TurnState => {
   const board = {
     width: raw.snakeBoardWidth,
@@ -102,109 +94,12 @@ const parseRawTurnData = (raw: RawTurnData): TurnState => {
   );
 
   return { turn: raw.snakeTurn, cells };
-
-  // return turnData;
-};
-
-const testTurnData: RawTurnData = {
-  appId: 1076323376,
-  appName: "BattleSnakeOil",
-  content_type: "application/json",
-  "cowboy.req_body_duration_ms": 0.573,
-  "cowboy.req_body_length": 1439,
-  "cowboy.resp_body_length": 16,
-  "cowboy.resp_duration_ms": 0,
-  duration: 0.002146,
-  duration_ms: 2.146,
-  duration_s: 0.002146,
-  duration_us: 2146,
-  end_time: 1653516170216.146,
-  entityGuid: "MzQwMjkwOHxBUE18QVBQTElDQVRJT058MTA3NjMyMzM3Ng",
-  guid: "7b687f7359a4981b",
-  host: "snake-server",
-  memory_kb: 21.1796875,
-  name: "WebTransaction/Plug/POST//move",
-  path: "/move",
-  pid: "#PID<0.1474.0>",
-  plug_name: "/Plug/POST//move",
-  priority: 0.214023,
-  process_spawns: 0,
-  realAgentId: 1076325080,
-  reductions: 164273,
-  remote_ip: "52.35.169.124",
-  request_method: "POST",
-  request_url: "45.33.45.245/move",
-  sampled: false,
-  snakeBoardFood:
-    "W3sieCI6NywieSI6MTB9LHsieCI6MTAsInkiOjd9LHsieCI6OSwieSI6OX0seyJ4IjoxMCwieSI6Nn0seyJ4IjoyLCJ5IjowfSx7IngiOjYsInkiOjl9LHsieCI6OCwieSI6N31d",
-  snakeBoardHazards: "W10=",
-  snakeBoardHeight: 11,
-  snakeBoardWidth: 11,
-  snakeData:
-    "eyJib2R5IjpbeyJ4IjozLCJ5IjozfSx7IngiOjIsInkiOjN9LHsieCI6MiwieSI6NH0seyJ4IjozLCJ5Ijo0fSx7IngiOjQsInkiOjR9XSwiY29sb3IiOiIjMWNlNzgzIiwiaGVhZCI6eyJ4IjozLCJ5IjozfX0=",
-  snakeGameId: "31725d83-4bdb-462e-a4f8-901b35c11f44",
-  snakeHealth: 94,
-  snakeId: "gs_RBQWWGwbw7jS4Tdq6JJMFxSW",
-  snakeLength: 5,
-  snakeName: "BattleSnakeOil",
-  snakeOpponent_1_Data:
-    "eyJib2R5IjpbeyJ4IjowLCJ5IjoyfSx7IngiOjEsInkiOjJ9LHsieCI6MSwieSI6M30seyJ4IjowLCJ5IjozfV0sImNvbG9yIjoiIzg4ODg4OCIsImhlYWQiOnsieCI6MCwieSI6Mn19",
-  snakeOpponent_1_Health: 60,
-  snakeOpponent_1_Id: "gs_733XP4gCtXRVJGyjXpYPTHJ9",
-  snakeOpponent_1_Length: 4,
-  snakeOpponent_1_Name: "BasicSnake",
-  snakeRules: "standard",
-  snakeTurn: 42,
-  start_time: 1653516170214,
-  status: 200,
-  "tags.account": "Account 3402908",
-  "tags.accountId": "3402908",
-  "tags.snake": "battlesnakeoil",
-  "tags.trustedAccountId": "3402908",
-  timestamp: 1653516170214,
-  totalTime: 0.002,
-  total_time_s: 0.002,
-  traceId: "713f329df663496c99b514e3c696a3d5",
-  transactionSubType: "Plug",
-  transactionType: "Web",
-  user_agent: "BattlesnakeEngine/1.0.83",
 };
 
 interface PlayerProps {
   gameId: string;
 }
 
-const Player = ({ gameId }: PlayerProps) => {
-  const { cells } = parseRawTurnData(testTurnData);
-
-  return (
-    <div className="bsr-player">
-      <HeadingText type={HeadingText.TYPE.HEADING_4}>{gameId}</HeadingText>
-      <div
-        className="bsr-board"
-        style={{ gridTemplateColumns: `repeat(${cells[0].length}, 1fr)` }}
-      >
-        {cells.map((row) =>
-          row.map((cell) => (
-            <div className="bsr-board--cell" key={`${cell.x},${cell.y}`}>
-              {cell.x},{cell.y}
-              {cell.isFood && <div className="bsr-board--food" />}
-              {cell.isHazard && <div className="bsr-board--hazard" />}
-              {cell.color && (
-                <div
-                  className={`bsr-board--snake ${cell.isHead ? "head" : ""}`}
-                  style={{ backgroundColor: cell.color }}
-                />
-              )}
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
-};
-
-/*
 // TODO: cache the game data?
 const Player = ({ gameId }: PlayerProps) => {
   const { account } = React.useContext(ReplayContext);
@@ -226,14 +121,21 @@ const Player = ({ gameId }: PlayerProps) => {
           );
         }
 
-        // TODO: render!
-        console.log("game data", data);
+        // TODO: put this into board state
+        console.log("data", data);
+        const state = parseRawTurnData(data[0].data[0]);
 
-        return <div>{gameId}</div>;
+        return (
+          <div className="bsr-player">
+            <HeadingText type={HeadingText.TYPE.HEADING_4}>
+              {gameId}
+            </HeadingText>
+            <Board state={state} />
+          </div>
+        );
       }}
     </NrqlQuery>
   );
 };
-*/
 
 export default Player;
