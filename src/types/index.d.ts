@@ -14,6 +14,11 @@ interface TurnStateCell {
   color?: string;
 }
 
+interface Position {
+  x: number;
+  y: number;
+}
+
 interface TurnState {
   turn: number;
   cells: TurnStateCell[][];
