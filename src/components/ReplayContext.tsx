@@ -1,13 +1,18 @@
 import * as React from "react";
 
+import reducer, { StoreState, StoreAction } from "../store";
+
 type ReplayContextType = {
-  games: ReplayGames;
-  setGames: (games: ReplayGames) => void;
+  state: StoreState;
+  dispatch?: React.Dispatch<StoreAction>;
+};
+
+const initState: StoreState = {
+  games: {},
 };
 
 export const ReplayContext = React.createContext<ReplayContextType>({
-  games: {},
-  setGames: () => {},
+  state: initState,
 });
 
 export const ReplayContextProvider = ({
@@ -15,10 +20,10 @@ export const ReplayContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [games, setGames] = React.useState<ReplayGames>({});
+  const [state, dispatch] = React.useReducer(reducer, initState);
 
   return (
-    <ReplayContext.Provider value={{ games, setGames }}>
+    <ReplayContext.Provider value={{ state, dispatch }}>
       {children}
     </ReplayContext.Provider>
   );

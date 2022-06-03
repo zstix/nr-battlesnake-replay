@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Tile, TileGroup, Icon } from "nr1";
 
+import ACTIONS from "../store/actions";
 import { ReplayContext } from "./ReplayContext";
 
 interface GameListProps {
@@ -53,17 +54,19 @@ const removeGame = (id: string, games: ReplayGames) => ({
 });
 
 const GameList = (props: GameListProps) => {
-  const { games, setGames } = React.useContext(ReplayContext);
+  const { games, setGames, dispatch } = React.useContext(ReplayContext);
 
   return (
     <TileGroup
       selectionType={TileGroup.SELECTION_TYPE.MULTIPLE}
       gapType={TileGroup.GAP_TYPE.SMALL}
-      onChange={(_e, id, checked) => {
+      onChange={(_e, id: string, checked) => {
         if (checked) {
-          setGames(addGame(id, games));
+          dispatch!({ type: ACTIONS.SHOW, payload: { id } });
+          // setGames(addGame(id, games));
         } else {
-          setGames(removeGame(id, games));
+          dispatch!({ type: ACTIONS.HIDE, payload: { id } });
+          // setGames(removeGame(id, games));
         }
       }}
     >

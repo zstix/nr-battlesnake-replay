@@ -8,6 +8,7 @@ import {
   PlatformStateContext,
 } from "nr1";
 
+import ACTIONS from "../store/actions";
 import timeRangeToNrql from "../utils/timeRangeToNrql";
 import parseRawTurnData from "../utils/parseRawTurnData";
 import { AccountContext } from "./AccountContext";
@@ -30,11 +31,11 @@ interface PlayerProps {
 
 const Player = ({ gameId }: PlayerProps) => {
   const { account } = React.useContext(AccountContext);
-  const { games, setGames } = React.useContext(ReplayContext);
+  const { state, dispatch } = React.useContext(ReplayContext);
 
   // if we already have the game fetched, just render it
-  if (games?.[gameId].turns?.length) {
-    const turns = games[gameId].turns;
+  if (state.games?.[gameId].turns?.length) {
+    const turns = state.games[gameId].turns;
     return (
       <div className="bsr-player">
         <HeadingText type={HeadingText.TYPE.HEADING_4}>{gameId}</HeadingText>
@@ -68,12 +69,9 @@ const Player = ({ gameId }: PlayerProps) => {
 
             const turns = data[0].data.map(parseRawTurnData) as TurnState[];
 
-            setGames({
-              ...games,
-              [gameId]: {
-                ...games[gameId],
-                turns,
-              },
+            dispatch!({
+              type: ACTIONS.SET_TURNS,
+              payload: { id: gameId, turns },
             });
 
             // TODO: DRY this up a bit

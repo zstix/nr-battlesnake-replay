@@ -5,14 +5,17 @@ import { ReplayContext } from "./ReplayContext";
 import Player from "./Player";
 
 const PlayerGrid = () => {
-  const { games } = React.useContext(ReplayContext);
+  const { state } = React.useContext(ReplayContext);
 
-  const gameIds = Object.entries(games).reduce<string[]>((ids, [id, game]) => {
-    if (game.showing) {
-      return [...ids, id];
-    }
-    return ids;
-  }, []);
+  const gameIds = Object.entries(state.games).reduce<string[]>(
+    (ids, [id, game]) => {
+      if (game.showing) {
+        return [...ids, id];
+      }
+      return ids;
+    },
+    []
+  );
 
   return (
     <div style={{ paddingRight: "1em" }}>
