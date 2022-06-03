@@ -13,6 +13,7 @@ import parseRawTurnData from "../utils/parseRawTurnData";
 import { AccountContext } from "./AccountContext";
 import { ReplayContext } from "./ReplayContext";
 import Board from "./Board";
+import Controls from "./Controls";
 
 const getGameQuery = (gameId: string, platformState: PlatformState) => `
   SELECT *
@@ -33,10 +34,12 @@ const Player = ({ gameId }: PlayerProps) => {
 
   // if we already have the game fetched, just render it
   if (games?.[gameId].turns?.length) {
+    const turns = games[gameId].turns;
     return (
       <div className="bsr-player">
         <HeadingText type={HeadingText.TYPE.HEADING_4}>{gameId}</HeadingText>
-        <Board state={games[gameId].turns![0]} />
+        <Board state={turns![0]} />
+        <Controls turn={0} maxTurn={turns!.length} />
       </div>
     );
   }
@@ -63,26 +66,24 @@ const Player = ({ gameId }: PlayerProps) => {
               );
             }
 
-            // TODO: remove
-            console.log("post-fetch data", data);
-
-            // TODO: get all turns, not just the first
-            const turn = parseRawTurnData(data[0].data[0]);
+            const turns = data[0].data.map(parseRawTurnData) as TurnState[];
 
             setGames({
               ...games,
               [gameId]: {
                 ...games[gameId],
-                turns: [turn],
+                turns,
               },
             });
 
+            // TODO: DRY this up a bit
             return (
               <div className="bsr-player">
                 <HeadingText type={HeadingText.TYPE.HEADING_4}>
                   {gameId}
                 </HeadingText>
-                <Board state={turn} />
+                <Board state={turns[0]} />
+                <Controls turn={0} maxTurn={turns.length} />
               </div>
             );
           }}

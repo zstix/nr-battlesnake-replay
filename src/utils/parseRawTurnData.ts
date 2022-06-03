@@ -30,11 +30,15 @@ const parseRawTurnData = (raw: RawTurnData): TurnState => {
   const board = {
     width: raw.snakeBoardWidth,
     height: raw.snakeBoardHeight,
-    food: decode<Position[]>(raw.snakeBoardFood),
-    hazards: decode<Position[]>(raw.snakeBoardHazards),
+    food: raw.snakeBoardFood ? decode<Position[]>(raw.snakeBoardFood) : [],
+    hazards: raw.snakeBoardHazards
+      ? decode<Position[]>(raw.snakeBoardHazards)
+      : [],
   };
 
-  let snakes: RawSnakeData[] = [decode<RawSnakeData>(raw.snakeData)];
+  let snakes: RawSnakeData[] = [];
+
+  if (raw.snakeData) snakes.push(decode<RawSnakeData>(raw.snakeData));
 
   // TODO: find a better way of doing this
   if (raw.snakeOpponent_1_Data)

@@ -16,7 +16,7 @@ interface PlatformState {
 
 declare module "nr1" {
   interface BaseProps {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     className?: string;
     style?: any;
   }
@@ -67,17 +67,37 @@ declare module "nr1" {
     SMALL,
   }
 
+  enum StackHorizontalType {
+    CENTER,
+    FILL,
+    FILL_EVENLY,
+    LEFT,
+    RIGHT,
+  }
+
+  enum StackVerticalType {
+    BOTTOM,
+    CENTER,
+    FILL,
+    FILL_EVENLY,
+    TOP,
+  }
+
   interface StackProps extends BaseProps {
     directionType?: StackDirectionType;
     gapType?: StackGapType;
     spacingType?: StackSpacingType[];
     fullWidth?: boolean;
+    horizontalType?: StackHorizontalType;
+    verticalType?: StackVerticalType;
   }
 
   export class Stack extends React.Component<StackProps> {
     static DIRECTION_TYPE = StackDirectionType;
     static GAP_TYPE = StackGapType;
     static SPACING_TYPE = StackSpacingType;
+    static HORIZONTAL_TYPE = StackHorizontalType;
+    static VERTICAL_TYPE = StackVerticalType;
   }
 
   export class StackItem extends React.Component<BaseProps> {}
@@ -246,6 +266,11 @@ declare module "nr1" {
     INTERFACE__SIGN__CHECKMARK__V_ALTERNATE,
     INTERFACE__OPERATIONS__CLOSE__V_ALTERNATE,
     INTERFACE__SIGN__MINUS__V_ALTERNATE,
+    INTERFACE__OPERATIONS__SKIP_BACK,
+    INTERFACE__OPERATIONS__SKIP_FORWARD,
+    INTERFACE__CHEVRON__CHEVRON_LEFT,
+    INTERFACE__CHEVRON__CHEVRON_RIGHT,
+    INTERFACE__OPERATIONS__PLAY,
   }
 
   interface IconProps {
@@ -290,5 +315,35 @@ declare module "nr1" {
 
   export class PlatformStateContext {
     static Consumer = PlatformStateConsumer;
+  }
+
+  // Controls \\
+
+  enum ButtonType {
+    DESTRUCTIVE,
+    NORMAL,
+    OUTLINE,
+    PLAIN,
+    PLAIN_NEUTRAL,
+    PRIMARY,
+    TERTIARY,
+  }
+
+  enum ButtonSize {
+    SMALL,
+    MEDIUM,
+    LARGE,
+  }
+
+  interface ButtonProps extends BaseProps {
+    type?: ButtonType;
+    sizeType?: ButtonSize;
+    onClick?: (event: React.MouseEvent) => void;
+    iconType?: IconType;
+  }
+
+  class Button extends React.Component<ButtonProps> {
+    static TYPE = ButtonType;
+    static ICON_TYPE = IconType;
   }
 }
