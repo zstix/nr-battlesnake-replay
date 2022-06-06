@@ -3,6 +3,7 @@ export enum StoreActionsTypes {
   HIDE,
   PLAY_PAUSE,
   SET_TURNS,
+  GOTO_TURN,
 }
 
 export default StoreActionsTypes;

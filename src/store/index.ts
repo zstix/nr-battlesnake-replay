@@ -5,6 +5,7 @@ export interface StoreAction {
   payload: {
     id: string;
     turns?: TurnState[];
+    turn?: number;
   };
 }
 
@@ -28,7 +29,7 @@ const addGame = (id: string, games: ReplayGames): ReplayGames => {
 
 const reducer = (state: StoreState, action: StoreAction): StoreState => {
   const { games } = state;
-  const { id, turns } = action.payload;
+  const { id, turns, turn } = action.payload;
   let updatedGames: ReplayGames = {};
 
   switch (action.type) {
@@ -64,6 +65,16 @@ const reducer = (state: StoreState, action: StoreAction): StoreState => {
         [id]: {
           ...games[id],
           playing: !games[id].playing,
+        },
+      };
+      return { ...state, games: updatedGames };
+
+    case ACTIONS.GOTO_TURN:
+      updatedGames = {
+        ...games,
+        [id]: {
+          ...games[id],
+          turn: turn!,
         },
       };
       return { ...state, games: updatedGames };

@@ -32,6 +32,32 @@ interface PlayerProps {
 const Player = ({ gameId }: PlayerProps) => {
   const { account } = React.useContext(AccountContext);
   const { state, dispatch } = React.useContext(ReplayContext);
+  const { playing, turn, turns } = state.games[gameId];
+
+  // TODO: move to separate file?
+  React.useEffect(() => {
+    let intervalId: number;
+
+    if (playing) {
+      // TODO: GET THE LAST TURN
+      if (turns && turn + 1 >= turns.length - 1) {
+        dispatch!({
+          type: ACTIONS.PLAY_PAUSE,
+          payload: { id: gameId },
+        });
+        return () => clearInterval(intervalId);
+      }
+
+      intervalId = setInterval(() => {
+        dispatch!({
+          type: ACTIONS.GOTO_TURN,
+          payload: { id: gameId, turn: turn + 1 },
+        });
+      }, 100);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [playing, turn]);
 
   // if we already have the game fetched, just render it
   if (state.games?.[gameId].turns?.length) {
@@ -39,8 +65,8 @@ const Player = ({ gameId }: PlayerProps) => {
     return (
       <div className="bsr-player">
         <HeadingText type={HeadingText.TYPE.HEADING_4}>{gameId}</HeadingText>
-        <Board state={turns![0]} />
-        <Controls turn={0} maxTurn={turns!.length} id={gameId} />
+        <Board state={turns![turn]} />
+        <Controls turn={turn} maxTurn={turns!.length} id={gameId} />
       </div>
     );
   }
@@ -80,8 +106,8 @@ const Player = ({ gameId }: PlayerProps) => {
                 <HeadingText type={HeadingText.TYPE.HEADING_4}>
                   {gameId}
                 </HeadingText>
-                <Board state={turns[0]} />
-                <Controls turn={0} maxTurn={turns.length} id={gameId} />
+                <Board state={turns[turn]} />
+                <Controls turn={turn} maxTurn={turns.length} id={gameId} />
               </div>
             );
           }}
