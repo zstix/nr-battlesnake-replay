@@ -40,7 +40,7 @@ const Player = ({ gameId }: PlayerProps) => {
       <div className="bsr-player">
         <HeadingText type={HeadingText.TYPE.HEADING_4}>{gameId}</HeadingText>
         <Board state={turns![0]} />
-        <Controls turn={0} maxTurn={turns!.length} />
+        <Controls turn={0} maxTurn={turns!.length} id={gameId} />
       </div>
     );
   }
@@ -81,7 +81,7 @@ const Player = ({ gameId }: PlayerProps) => {
                   {gameId}
                 </HeadingText>
                 <Board state={turns[0]} />
-                <Controls turn={0} maxTurn={turns.length} />
+                <Controls turn={0} maxTurn={turns.length} id={gameId} />
               </div>
             );
           }}

@@ -26,6 +26,8 @@ interface TurnState {
 
 interface ReplayGame {
   showing: boolean;
+  turn: number;
+  playing: boolean;
   turns?: TurnState[];
 }
 

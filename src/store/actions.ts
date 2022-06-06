@@ -1,8 +1,7 @@
 export enum StoreActionsTypes {
   SHOW,
   HIDE,
-  PLAY,
-  PAUSE,
+  PLAY_PAUSE,
   SET_TURNS,
 }
 

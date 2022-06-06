@@ -14,7 +14,7 @@ export interface StoreState {
 
 const addGame = (id: string, games: ReplayGames): ReplayGames => {
   if (!games[id]) {
-    return { ...games, [id]: { showing: true } };
+    return { ...games, [id]: { showing: true, playing: false, turn: 0 } };
   }
 
   return {
@@ -29,6 +29,7 @@ const addGame = (id: string, games: ReplayGames): ReplayGames => {
 const reducer = (state: StoreState, action: StoreAction): StoreState => {
   const { games } = state;
   const { id, turns } = action.payload;
+  let updatedGames: ReplayGames = {};
 
   switch (action.type) {
     case ACTIONS.SHOW:
@@ -38,24 +39,34 @@ const reducer = (state: StoreState, action: StoreAction): StoreState => {
       };
 
     case ACTIONS.HIDE:
-      const gamesWithHidden = {
+      updatedGames = {
         ...games,
         [id]: {
           ...games[id],
           showing: false,
         },
       };
-      return { ...state, games: gamesWithHidden };
+      return { ...state, games: updatedGames };
 
     case ACTIONS.SET_TURNS:
-      const gamesWithTurns = {
+      updatedGames = {
         ...games,
         [id]: {
           ...games[id],
           turns,
         },
       };
-      return { ...state, games: gamesWithTurns };
+      return { ...state, games: updatedGames };
+
+    case ACTIONS.PLAY_PAUSE:
+      updatedGames = {
+        ...games,
+        [id]: {
+          ...games[id],
+          playing: !games[id].playing,
+        },
+      };
+      return { ...state, games: updatedGames };
 
     default:
       return state;
