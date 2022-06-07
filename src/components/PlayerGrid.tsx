@@ -19,7 +19,7 @@ const PlayerGrid = () => {
   );
 
   return (
-    <div style={{ padding: "0 1rem" }}>
+    <div style={{ paddingRight: "1rem" }}>
       <Stack
         directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
         horizontalType={Stack.HORIZONTAL_TYPE.FILL}

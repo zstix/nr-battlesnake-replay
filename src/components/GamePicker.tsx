@@ -39,7 +39,7 @@ const GamePicker = () => {
       </StackItem>
 
       {Boolean(account) && (
-        <StackItem style={{ width: "90%" }}>
+        <StackItem>
           <PlatformStateContext.Consumer>
             {(platformState) => (
               <NrqlQuery
