@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-  HeadingText,
   NrqlQuery,
   Spinner,
   InlineMessage,
@@ -64,7 +63,7 @@ const Player = ({ gameId }: PlayerProps) => {
     const turns = state.games[gameId].turns;
     return (
       <div className="bsr-player">
-        <HeadingText type={HeadingText.TYPE.HEADING_4}>{gameId}</HeadingText>
+        <div>{gameId}</div>
         <Board state={turns![turn]} />
         <Controls turn={turn} maxTurn={turns!.length} id={gameId} />
       </div>
@@ -103,9 +102,7 @@ const Player = ({ gameId }: PlayerProps) => {
             // TODO: DRY this up a bit
             return (
               <div className="bsr-player">
-                <HeadingText type={HeadingText.TYPE.HEADING_4}>
-                  {gameId}
-                </HeadingText>
+                <div>{gameId}</div>
                 <Board state={turns[turn]} />
                 <Controls turn={turn} maxTurn={turns.length} id={gameId} />
               </div>

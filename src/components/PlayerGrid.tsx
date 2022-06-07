@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Grid, GridItem, HeadingText } from "nr1";
+import { Grid, GridItem, HeadingText, Stack, StackItem } from "nr1";
 
 import { ReplayContext } from "./ReplayContext";
 import Player from "./Player";
+import Controls from "./Controls";
 
 const PlayerGrid = () => {
   const { state } = React.useContext(ReplayContext);
@@ -18,16 +19,28 @@ const PlayerGrid = () => {
   );
 
   return (
-    <div style={{ paddingRight: "1em" }}>
-      <HeadingText
-        type={HeadingText.TYPE.HEADING_3}
-        spacingType={[
-          HeadingText.SPACING_TYPE.MEDIUM,
-          HeadingText.SPACING_TYPE.NONE,
-        ]}
+    <div style={{ padding: "0 1rem" }}>
+      <Stack
+        directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+        horizontalType={Stack.HORIZONTAL_TYPE.FILL}
+        verticalType={Stack.VERTICAL_TYPE.CENTER}
+        fullWidth
       >
-        {gameIds.length ? "View" : "Pick"} Game(s)
-      </HeadingText>
+        <StackItem>
+          <HeadingText
+            type={HeadingText.TYPE.HEADING_3}
+            spacingType={[
+              HeadingText.SPACING_TYPE.MEDIUM,
+              HeadingText.SPACING_TYPE.NONE,
+            ]}
+          >
+            {gameIds.length ? "View" : "Pick"} Game(s)
+          </HeadingText>
+        </StackItem>
+        <StackItem>
+          <Controls turn={0} maxTurn={0} />
+        </StackItem>
+      </Stack>
       <Grid>
         {gameIds.map((gameId) => (
           <GridItem key={gameId} columnSpan={4}>
