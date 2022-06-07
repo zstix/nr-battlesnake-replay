@@ -27,6 +27,8 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
     ? Button.ICON_TYPE.INTERFACE__OPERATIONS__PAUSE
     : Button.ICON_TYPE.INTERFACE__OPERATIONS__PLAY;
 
+  const buttonType = id ? Button.TYPE.NORMAL : Button.TYPE.PRIMARY;
+
   const targetId = id || ALL;
 
   return (
@@ -48,7 +50,7 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
 
       <StackItem>
         <Button
-          type={Button.TYPE.TERTIARY}
+          type={buttonType}
           iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__SKIP_BACK}
           onClick={() => {
             dispatch!({
@@ -61,7 +63,7 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
 
       <StackItem>
         <Button
-          type={Button.TYPE.TERTIARY}
+          type={buttonType}
           iconType={Button.ICON_TYPE.INTERFACE__CHEVRON__CHEVRON_LEFT}
           onClick={() => {
             dispatch!({
@@ -74,7 +76,7 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
 
       <StackItem>
         <Button
-          type={Button.TYPE.TERTIARY}
+          type={buttonType}
           iconType={playPauseIcon}
           onClick={() => {
             dispatch!({
@@ -87,7 +89,7 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
 
       <StackItem>
         <Button
-          type={Button.TYPE.TERTIARY}
+          type={buttonType}
           iconType={Button.ICON_TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}
           onClick={() => {
             dispatch!({
@@ -100,7 +102,7 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
 
       <StackItem>
         <Button
-          type={Button.TYPE.TERTIARY}
+          type={buttonType}
           iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__SKIP_FORWARD}
           onClick={() => {
             dispatch!({
