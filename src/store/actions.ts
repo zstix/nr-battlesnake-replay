@@ -6,4 +6,11 @@ export enum StoreActionsTypes {
   GOTO_TURN,
 }
 
+export enum TURN_TARGETS {
+  NEXT,
+  PREVIOUS,
+  FIRST,
+  LAST,
+}
+
 export default StoreActionsTypes;

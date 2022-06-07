@@ -1,11 +1,11 @@
-import ACTIONS, { StoreActionsTypes } from "./actions";
+import ACTIONS, { TURN_TARGETS } from "./actions";
 
 export interface StoreAction {
-  type: StoreActionsTypes;
+  type: ACTIONS;
   payload: {
     id: string;
     turns?: TurnState[];
-    turn?: number;
+    target?: TURN_TARGETS;
   };
 }
 
@@ -27,9 +27,42 @@ const addGame = (id: string, games: ReplayGames): ReplayGames => {
   };
 };
 
+const gotoTurn = (
+  id: string,
+  target: TURN_TARGETS,
+  games: ReplayGames
+): ReplayGames => {
+  const game = games[id];
+
+  switch (target) {
+    case TURN_TARGETS.NEXT:
+      if (game.turn < game.turns!.length) {
+        game.turn = game.turn + 1;
+      }
+      break;
+
+    case TURN_TARGETS.PREVIOUS:
+      if (game.turn > 0) {
+        game.turn = game.turn - 1;
+      }
+      break;
+
+    case TURN_TARGETS.FIRST:
+      game.turn = 0;
+      break;
+
+    // TODO: GET THE LAST TURN
+    case TURN_TARGETS.LAST:
+      game.turn = game.turns!.length - 2;
+      break;
+  }
+
+  return { ...games, [id]: game };
+};
+
 const reducer = (state: StoreState, action: StoreAction): StoreState => {
   const { games } = state;
-  const { id, turns, turn } = action.payload;
+  const { id, turns, target } = action.payload;
   let updatedGames: ReplayGames = {};
 
   switch (action.type) {
@@ -70,14 +103,10 @@ const reducer = (state: StoreState, action: StoreAction): StoreState => {
       return { ...state, games: updatedGames };
 
     case ACTIONS.GOTO_TURN:
-      updatedGames = {
-        ...games,
-        [id]: {
-          ...games[id],
-          turn: turn!,
-        },
+      return {
+        ...state,
+        games: gotoTurn(id, target!, state.games),
       };
-      return { ...state, games: updatedGames };
 
     default:
       return state;

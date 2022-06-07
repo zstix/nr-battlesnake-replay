@@ -8,7 +8,7 @@ import {
   PlatformStateContext,
 } from "nr1";
 
-import ACTIONS from "../store/actions";
+import ACTIONS, { TURN_TARGETS } from "../store/actions";
 import timeRangeToNrql from "../utils/timeRangeToNrql";
 import parseRawTurnData from "../utils/parseRawTurnData";
 import { AccountContext } from "./AccountContext";
@@ -51,7 +51,7 @@ const Player = ({ gameId }: PlayerProps) => {
       intervalId = setInterval(() => {
         dispatch!({
           type: ACTIONS.GOTO_TURN,
-          payload: { id: gameId, turn: turn + 1 },
+          payload: { id: gameId, target: TURN_TARGETS.NEXT },
         });
       }, 100);
     }

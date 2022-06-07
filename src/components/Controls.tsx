@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Stack, StackItem, Button } from "nr1";
 
-import ACTIONS from "../store/actions";
+import ACTIONS, { TURN_TARGETS } from "../store/actions";
 import { ReplayContext } from "./ReplayContext";
 
 interface ControlsProps {
@@ -35,6 +35,12 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
         <Button
           type={Button.TYPE.TERTIARY}
           iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__SKIP_BACK}
+          onClick={() => {
+            dispatch!({
+              type: ACTIONS.GOTO_TURN,
+              payload: { id, target: TURN_TARGETS.FIRST },
+            });
+          }}
         />
       </StackItem>
 
@@ -42,6 +48,12 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
         <Button
           type={Button.TYPE.TERTIARY}
           iconType={Button.ICON_TYPE.INTERFACE__CHEVRON__CHEVRON_LEFT}
+          onClick={() => {
+            dispatch!({
+              type: ACTIONS.GOTO_TURN,
+              payload: { id, target: TURN_TARGETS.PREVIOUS },
+            });
+          }}
         />
       </StackItem>
 
@@ -62,6 +74,12 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
         <Button
           type={Button.TYPE.TERTIARY}
           iconType={Button.ICON_TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}
+          onClick={() => {
+            dispatch!({
+              type: ACTIONS.GOTO_TURN,
+              payload: { id, target: TURN_TARGETS.NEXT },
+            });
+          }}
         />
       </StackItem>
 
@@ -69,6 +87,12 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
         <Button
           type={Button.TYPE.TERTIARY}
           iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__SKIP_FORWARD}
+          onClick={() => {
+            dispatch!({
+              type: ACTIONS.GOTO_TURN,
+              payload: { id, target: TURN_TARGETS.LAST },
+            });
+          }}
         />
       </StackItem>
     </Stack>
