@@ -20,14 +20,13 @@ const Controls = ({ turn, maxTurn, id }: ControlsProps) => {
     return null;
   }
 
-  // TODO: sort this out
-  const playing = id ? state.games[id].playing : false;
+  const playing = id ? state.games[id].playing : !id && state.allPlaying;
 
   const playPauseIcon = playing
     ? Button.ICON_TYPE.INTERFACE__OPERATIONS__PAUSE
     : Button.ICON_TYPE.INTERFACE__OPERATIONS__PLAY;
 
-  const buttonType = id ? Button.TYPE.NORMAL : Button.TYPE.PRIMARY;
+  const buttonType = id ? Button.TYPE.TERTIARY : Button.TYPE.PRIMARY;
 
   const targetId = id || ALL;
 

@@ -1,5 +1,7 @@
 import ACTIONS, { TURN_TARGETS } from "./actions";
 
+const ALL = "ALL";
+
 export interface StoreAction {
   type: ACTIONS;
   payload: {
@@ -11,6 +13,7 @@ export interface StoreAction {
 
 export interface StoreState {
   games: ReplayGames;
+  allPlaying: boolean;
 }
 
 const addGame = (id: string, games: ReplayGames): ReplayGames => {
@@ -32,6 +35,14 @@ const gotoTurn = (
   target: TURN_TARGETS,
   games: ReplayGames
 ): ReplayGames => {
+  // if global controls (ALL), call this method on all games
+  if (id === ALL) {
+    return Object.keys(games).reduce(
+      (acc, id) => gotoTurn(id, target, acc),
+      games
+    );
+  }
+
   const game = games[id];
 
   switch (target) {
@@ -61,9 +72,30 @@ const gotoTurn = (
   return { ...games, [id]: game };
 };
 
+const playPause = (id: string, games: ReplayGames): ReplayGames => {
+  if (id === ALL) {
+    return Object.entries(games).reduce(
+      (acc, [id, game]) => ({
+        ...acc,
+        [id]: { ...game, playing: !game.playing },
+      }),
+      {}
+    );
+  }
+
+  return {
+    ...games,
+    [id]: {
+      ...games[id],
+      playing: !games[id].playing,
+    },
+  };
+};
+
 const reducer = (state: StoreState, action: StoreAction): StoreState => {
   const { games } = state;
   const { id, turns, target } = action.payload;
+
   let updatedGames: ReplayGames = {};
 
   switch (action.type) {
@@ -94,14 +126,8 @@ const reducer = (state: StoreState, action: StoreAction): StoreState => {
       return { ...state, games: updatedGames };
 
     case ACTIONS.PLAY_PAUSE:
-      updatedGames = {
-        ...games,
-        [id]: {
-          ...games[id],
-          playing: !games[id].playing,
-        },
-      };
-      return { ...state, games: updatedGames };
+      const allPlaying = !(state.allPlaying && id === ALL);
+      return { ...state, allPlaying, games: playPause(id, games) };
 
     case ACTIONS.GOTO_TURN:
       return {
