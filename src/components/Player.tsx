@@ -7,11 +7,12 @@ import {
   PlatformStateContext,
 } from "nr1";
 
-import ACTIONS, { TURN_TARGETS } from "../store/actions";
+import ACTIONS from "../store/actions";
 import timeRangeToNrql from "../utils/timeRangeToNrql";
 import parseRawTurnData from "../utils/parseRawTurnData";
 import { AccountContext } from "./AccountContext";
 import { ReplayContext } from "./ReplayContext";
+import useGameTimer from "../hooks/useGameTimer";
 import Board from "./Board";
 import Controls from "./Controls";
 
@@ -31,35 +32,16 @@ interface PlayerProps {
 const Player = ({ gameId }: PlayerProps) => {
   const { account } = React.useContext(AccountContext);
   const { state, dispatch } = React.useContext(ReplayContext);
-  const { playing, turn, turns } = state.games[gameId];
 
-  // TODO: move to separate file?
-  React.useEffect(() => {
-    let intervalId: number;
+  const game = state.games[gameId];
+  const { turn } = game;
 
-    if (playing) {
-      if (turns && turn + 1 > turns.length - 1) {
-        dispatch!({
-          type: ACTIONS.PLAY_PAUSE,
-          payload: { id: gameId },
-        });
-        return () => clearInterval(intervalId);
-      }
-
-      intervalId = setInterval(() => {
-        dispatch!({
-          type: ACTIONS.GOTO_TURN,
-          payload: { id: gameId, target: TURN_TARGETS.NEXT },
-        });
-      }, 100);
-    }
-
-    return () => clearInterval(intervalId);
-  }, [playing, turn]);
+  useGameTimer(gameId, game, dispatch!);
 
   // if we already have the game fetched, just render it
   if (state.games?.[gameId].turns?.length) {
     const turns = state.games[gameId].turns;
+
     return (
       <div className="bsr-player">
         <div>{gameId}</div>
@@ -93,19 +75,14 @@ const Player = ({ gameId }: PlayerProps) => {
 
             const turns = data[0].data.map(parseRawTurnData) as TurnState[];
 
+            // fetch the game and store in state
             dispatch!({
               type: ACTIONS.SET_TURNS,
               payload: { id: gameId, turns },
             });
 
-            // TODO: DRY this up a bit
-            return (
-              <div className="bsr-player">
-                <div>{gameId}</div>
-                <Board state={turns[turn]} />
-                <Controls turn={turn} maxTurn={turns.length} id={gameId} />
-              </div>
-            );
+            // don't return anything...this will re-render when we get data back
+            return null;
           }}
         </NrqlQuery>
       )}
