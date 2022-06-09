@@ -1,6 +1,5 @@
 import * as React from "react";
 
-// TODO: clean up styles
 const Cell = (cell: TurnStateCell) => (
   <div className="bsr-board--cell" key={`${cell.x},${cell.y}`}>
     {cell.isFood && <div className="bsr-board--food" />}

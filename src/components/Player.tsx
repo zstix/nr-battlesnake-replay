@@ -38,8 +38,7 @@ const Player = ({ gameId }: PlayerProps) => {
     let intervalId: number;
 
     if (playing) {
-      // TODO: GET THE LAST TURN
-      if (turns && turn + 1 >= turns.length - 1) {
+      if (turns && turn + 1 > turns.length - 1) {
         dispatch!({
           type: ACTIONS.PLAY_PAUSE,
           payload: { id: gameId },

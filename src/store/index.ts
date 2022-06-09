@@ -47,8 +47,7 @@ const gotoTurn = (
 
   switch (target) {
     case TURN_TARGETS.NEXT:
-      // TODO: GET THE LAST TURN
-      if (game.turn < game.turns!.length - 2) {
+      if (game.turn < game.turns!.length - 1) {
         game.turn = game.turn + 1;
       }
       break;
@@ -63,9 +62,8 @@ const gotoTurn = (
       game.turn = 0;
       break;
 
-    // TODO: GET THE LAST TURN
     case TURN_TARGETS.LAST:
-      game.turn = game.turns!.length - 2;
+      game.turn = game.turns!.length - 1;
       break;
   }
 
