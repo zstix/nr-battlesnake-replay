@@ -31,30 +31,8 @@ const getWinState = (game: GameQueryResponseData) => {
   );
 };
 
-const addGame = (id: string, games: ReplayGames) => {
-  if (!games[id]) {
-    return { ...games, [id]: { showing: true } };
-  }
-
-  return {
-    ...games,
-    [id]: {
-      ...games[id],
-      showing: true,
-    },
-  };
-};
-
-const removeGame = (id: string, games: ReplayGames) => ({
-  ...games,
-  [id]: {
-    ...games[id],
-    showing: false,
-  },
-});
-
 const GameList = (props: GameListProps) => {
-  const { games, setGames, dispatch } = React.useContext(ReplayContext);
+  const { dispatch } = React.useContext(ReplayContext);
 
   return (
     <TileGroup
@@ -63,10 +41,8 @@ const GameList = (props: GameListProps) => {
       onChange={(_e, id: string, checked) => {
         if (checked) {
           dispatch!({ type: ACTIONS.SHOW, payload: { id } });
-          // setGames(addGame(id, games));
         } else {
           dispatch!({ type: ACTIONS.HIDE, payload: { id } });
-          // setGames(removeGame(id, games));
         }
       }}
     >
